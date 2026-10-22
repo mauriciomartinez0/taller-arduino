@@ -67,7 +67,7 @@ export default async function CasePage({ params }: PageProps<'/casos/[id]'>) {
         nextCaseId={nextCaseId}
         wokwiUrl={setting.wokwiUrl}
         options={caseData.fix.type === 'choice' ? shuffle(caseData.fix.options) : undefined}
-        scene={caseData.kind === 'circuit' ? getScene(caseData.circuit) : undefined}
+        scene={caseData.circuit ? getScene(caseData.circuit) : undefined}
       />
     </article>
   );

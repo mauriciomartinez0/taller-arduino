@@ -214,7 +214,13 @@ export function CaseView({
       )}
 
       <div
-        className={caseData.kind === 'circuit' && caseData.code ? 'grid gap-4 lg:grid-cols-2' : ''}
+        className={
+          caseData.kind === 'circuit' && caseData.code
+            ? 'grid gap-4 lg:grid-cols-2'
+            : caseData.kind === 'code' && scene
+              ? 'grid gap-4 lg:grid-cols-[3fr_2fr]'
+              : ''
+        }
       >
         {caseData.kind === 'circuit' && scene && (
           <CircuitDiagram
@@ -244,6 +250,13 @@ export function CaseView({
             {caseData.kind === 'code' && caseData.compilerOutput && (
               <CompilerOutput output={caseData.compilerOutput} />
             )}
+          </div>
+        )}
+        {/* Logic cases: the circuit is right, shown only as a reference (not clickable). */}
+        {caseData.kind === 'code' && scene && (
+          <div className="flex flex-col gap-2">
+            <h2 className="text-base">Circuito (está bien armado)</h2>
+            <CircuitDiagram scene={scene} label={`Circuito del caso ${caseData.id}`} />
           </div>
         )}
       </div>

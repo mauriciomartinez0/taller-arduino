@@ -309,6 +309,7 @@ void loop() {
     },
     fix: { type: 'editLine', accept: [{ pattern: /^constintLED=(3|5|6|9|10|11);$/ }] },
     solvedNote: '¡Y no olvides mover también el cable al nuevo pin!',
+    fixedCircuit: 'C5-fixed',
     explanation:
       'El pin 8 no tiene PWM. En un pin sin ~, analogWrite() solo apaga (valores menores que 128) o enciende (128 o más). Hay que usar un pin con ~ (3, 5, 6, 9, 10 u 11) y mover el cable.',
     fixedCode: `const int LED = 9;   // pin con ~ (PWM)

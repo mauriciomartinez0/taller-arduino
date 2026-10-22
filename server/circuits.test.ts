@@ -26,6 +26,14 @@ describe('circuit scenes', () => {
     });
   }
 
+  it('every logic case has a reference circuit, and C5 a corrected one on pin 9', () => {
+    for (const c of cases.filter((c) => c.group === 'C')) {
+      expect(c.circuit, c.id).toBeDefined();
+      expect(getScene(c.circuit!), c.id).toBeDefined();
+    }
+    expect(getScene(answers.C5.fixedCircuit!)?.usedPins).toContain('9');
+  });
+
   it('A1 has the LED reversed and the fixed version has it lit', () => {
     const led = (id: string) => getScene(id)!.parts.find((p) => p.kind === 'led');
     const broken = led('A1');

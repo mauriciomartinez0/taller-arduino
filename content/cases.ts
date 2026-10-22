@@ -62,6 +62,8 @@ export type CodeCase = CaseBase & {
   compilerOutput?: string;
   /** Overrides the default step-1 question. */
   locatePrompt?: string;
+  /** Reference circuit shown next to the code (not clickable: the error is in the code). */
+  circuit?: string;
 };
 
 export type CircuitCase = CaseBase & {
@@ -414,6 +416,7 @@ sketch.ino:8:9: error: 'espera' was not declared in this scope
     id: 'C1',
     group: 'C',
     kind: 'code',
+    circuit: 'C1',
     title: 'El LED no parpadea: se queda encendido',
     typeLabel: 'Lógica',
     expected: 'El LED enciende 1 segundo y se apaga 1 segundo.',
@@ -441,6 +444,7 @@ void loop() {
     id: 'C2',
     group: 'C',
     kind: 'code',
+    circuit: 'C2',
     title: 'El botón no hace nada',
     typeLabel: 'Lógica',
     expected: 'Al presionar el botón, el LED enciende.',
@@ -472,6 +476,7 @@ void loop() {
     id: 'C3',
     group: 'C',
     kind: 'code',
+    circuit: 'C3',
     title: 'La alarma roja nunca se enciende',
     typeLabel: 'Lógica',
     expected: 'Perilla baja: verde. Media: amarillo. Al tope (más de 400): rojo.',
@@ -522,6 +527,7 @@ void loop() {
     id: 'C4',
     group: 'C',
     kind: 'code',
+    circuit: 'C4',
     title: 'El Monitor Serie está vacío',
     typeLabel: 'Lógica',
     expected: 'Ver en el Monitor Serie los números del potenciómetro.',
@@ -547,6 +553,7 @@ void loop() {
     id: 'C5',
     group: 'C',
     kind: 'code',
+    circuit: 'C5',
     title: 'El LED no se desvanece: parpadea',
     typeLabel: 'Lógica',
     expected: 'El LED sube y baja de brillo suavemente (efecto “fade”).',
@@ -579,6 +586,7 @@ void loop() {
     id: 'C6',
     group: 'C',
     kind: 'code',
+    circuit: 'C6',
     title: 'El LED funciona… al revés',
     typeLabel: 'Lógica',
     expected: 'El LED enciende mientras presionas el botón.',

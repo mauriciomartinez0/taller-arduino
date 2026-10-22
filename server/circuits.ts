@@ -49,6 +49,68 @@ function pinToRowJ(id: string, color: 'blue' | 'green', from: PinName, col: numb
   };
 }
 
+type LedGroup = {
+  pin: PinName;
+  /** Column of the signal wire (row j) and of the resistor's left lead. */
+  col: number;
+  color: LedColor;
+  wire: 'blue' | 'green' | 'red' | 'yellow';
+  lane: number;
+};
+
+/**
+ * Compact LED group (C3): pin → col j, resistor col h → col+2 h, LED col+2 f (+) / col+3 f (−),
+ * jumper col+3 i → − rail. Uses 4 columns instead of 6 so three LEDs and a potentiometer fit.
+ */
+function compactLed({ pin: from, col, color, wire, lane }: LedGroup): ScenePart[] {
+  return [
+    {
+      kind: 'wire',
+      color: wire,
+      points: route(pin(from), { y: lane }, { x: columnX(col) }, { y: hole(col, 'j').y }),
+    },
+    { kind: 'resistor', from: hole(col, 'h'), to: hole(col + 2, 'h'), bands: BANDS_220 },
+    { kind: 'led', anode: hole(col + 2, 'f'), cathode: hole(col + 3, 'f'), color },
+    { kind: 'wire', color: 'black', points: [hole(col + 3, 'i'), railHole(col + 3, 'bottom-')] },
+  ];
+}
+
+/** C3: green 8, yellow 9, red 10 and a potentiometer on A0 (legs 16, 18, 20). */
+function alarmCircuit(): ScenePart[] {
+  return [
+    gndToRail(),
+    {
+      kind: 'wire',
+      color: 'red',
+      points: route(
+        pin('5V'),
+        { y: BOTTOM_LANES.first },
+        { x: SIDE_LANES.left2 },
+        { y: railHole(1, 'bottom+').y },
+        { x: columnX(1) },
+      ),
+    },
+    ...compactLed({ pin: '10', col: 3, color: 'red', wire: 'red', lane: LANES.lower - 4 }),
+    ...compactLed({ pin: '9', col: 7, color: 'yellow', wire: 'yellow', lane: LANES.upper }),
+    ...compactLed({ pin: '8', col: 11, color: 'green', wire: 'green', lane: LANES.lower + 8 }),
+    { kind: 'potentiometer', col: 16 },
+    {
+      kind: 'wire',
+      color: 'blue',
+      points: route(
+        pin('A0'),
+        { y: BOTTOM_LANES.first },
+        { x: SIDE_LANES.right },
+        { y: LANES.upper },
+        { x: columnX(18) },
+        { y: hole(18, 'j').y },
+      ),
+    },
+    { kind: 'wire', color: 'red', points: [hole(16, 'i'), railHole(16, 'bottom+')] },
+    { kind: 'wire', color: 'black', points: [hole(20, 'i'), railHole(20, 'bottom-')] },
+  ];
+}
+
 function jumperToRail(id: string, col: number, color: 'black' | 'red' = 'black'): ScenePart {
   const rail = color === 'red' ? 'bottom+' : 'bottom-';
   return { kind: 'wire', id, color, points: [hole(col, 'i'), railHole(col, rail)] };
@@ -192,6 +254,15 @@ const scenes: Record<string, Scene> = {
 
   A6: { usedPins: ['5V', 'GND', 'A0'], parts: potCircuit(false) },
   'A6-fixed': { usedPins: ['5V', 'GND', 'A0'], parts: potCircuit(true) },
+
+  // Logic cases: the circuit is right (reference only), the error is in the code.
+  C1: { usedPins: ['GND', '8'], parts: ledCircuit() },
+  C2: { usedPins: ['GND', '2', '8'], parts: buttonCircuit(6) },
+  C3: { usedPins: ['5V', 'GND', 'A0', '8', '9', '10'], parts: alarmCircuit() },
+  C4: { usedPins: ['5V', 'GND', 'A0'], parts: potCircuit(true) },
+  C5: { usedPins: ['GND', '8'], parts: ledCircuit() },
+  'C5-fixed': { usedPins: ['GND', '9'], parts: ledCircuit({ signalPin: '9', lit: 'normal' }) },
+  C6: { usedPins: ['GND', '2', '8'], parts: buttonCircuit(6) },
 };
 
 export function getScene(id: string): Scene | undefined {
