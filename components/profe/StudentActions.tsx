@@ -22,7 +22,7 @@ export function StudentActions({ student }: { student: Pick<PanelStudent, 'id' |
         <span className="sr-only">Acciones para {student.displayName}</span>
       </summary>
       <div className="absolute right-0 z-10 mt-1 flex w-56 flex-col gap-1 rounded-xl border-2 border-slate-200 bg-white p-2 text-left shadow-lg">
-        <p className="px-2 py-1 text-xs text-slate-500">
+        <p className="px-2 py-1 text-xs text-slate-600">
           PIN: <span className="text-ink font-mono text-base font-bold">{pin ?? '••••'}</span>
         </p>
         <button

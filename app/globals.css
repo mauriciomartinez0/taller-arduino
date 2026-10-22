@@ -18,7 +18,7 @@
   --color-syn-keyword: #5fc8da;
   --color-syn-function: #bcd94a;
   --color-syn-number: #b892f2;
-  --color-syn-comment: #8d8676;
+  --color-syn-comment: #a39b8a; /* slide color #8d8676 lightened to reach AA (4.5:1) */
   --color-syn-string: #e8d36d;
   --color-syn-text: #e6eef0;
 

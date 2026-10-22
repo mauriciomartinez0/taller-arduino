@@ -1,6 +1,6 @@
 import 'server-only';
 
-/** Correct option per quiz question (see `content/review.ts`). DRAFT pending approval. */
+/** Correct option per quiz question (see `content/review.ts`). */
 export const quizAnswers: Record<string, string> = {
   'pines-1': 'pwm',
   'pines-2': 'a0',

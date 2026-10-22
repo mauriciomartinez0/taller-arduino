@@ -27,7 +27,7 @@ export default async function ReviewPage() {
                 href={`/repaso/${topic.slug}`}
                 className="hover:border-accent hover:bg-card flex h-full flex-col gap-1 rounded-2xl border-2 border-slate-200 bg-white p-4 transition-colors"
               >
-                <span className="text-sm font-semibold text-slate-500">
+                <span className="text-sm font-semibold text-slate-600">
                   {i + 1} · Clase {topic.lesson}
                 </span>
                 <span className="text-ink font-semibold">{topic.title}</span>

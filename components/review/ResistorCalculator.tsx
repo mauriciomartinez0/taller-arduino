@@ -50,7 +50,7 @@ export function ResistorCalculator() {
   return (
     <Card tone="accent" className="flex flex-col gap-6">
       <section>
-        <h3 className="text-base">De colores a valor</h3>
+        <h2 className="text-base">De colores a valor</h2>
         <div className="mt-2 flex flex-wrap gap-2" role="radiogroup" aria-label="Número de bandas">
           {([4, 5] as const).map((n) => (
             <button
@@ -129,7 +129,7 @@ export function ResistorCalculator() {
       </section>
 
       <section>
-        <h3 className="text-base">De valor a colores</h3>
+        <h2 className="text-base">De valor a colores</h2>
         <label className="mt-2 flex flex-col text-sm sm:w-64">
           Escribe un valor (por ejemplo 220, 1k o 10k)
           <input

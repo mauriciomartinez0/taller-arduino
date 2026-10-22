@@ -34,7 +34,7 @@ export default async function CasePage({ params }: PageProps<'/casos/[id]'>) {
 
   const header = (
     <header className="mb-6">
-      <p className="text-sm font-semibold text-slate-500">
+      <p className="text-sm font-semibold text-slate-600">
         Caso {caseData.id} · {caseData.typeLabel}
       </p>
       <h1 className="mt-1 text-2xl sm:text-3xl">{caseData.title}</h1>

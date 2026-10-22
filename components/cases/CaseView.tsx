@@ -388,11 +388,15 @@ function ChoiceList({
               onClick={() => onPick(o.id)}
               className={`flex h-full w-full items-start gap-3 rounded-2xl border-2 p-4 text-left transition-colors ${
                 isWrong
-                  ? 'border-bad/50 bg-bad/5 cursor-not-allowed text-slate-500'
+                  ? 'border-bad/50 bg-bad/5 cursor-not-allowed text-slate-600'
                   : 'hover:border-accent hover:bg-card border-slate-200 bg-white'
               }`}
             >
-              {isWrong && <span aria-label="Incorrecta">❌</span>}
+              {isWrong && (
+                <span role="img" aria-label="Incorrecta">
+                  ❌
+                </span>
+              )}
               <span>
                 <RichText text={o.text} />
               </span>

@@ -87,7 +87,7 @@ export default async function TeacherHomePage() {
             </label>
             <label className="block">
               <span className="font-semibold">Código</span>
-              <span className="block text-sm text-slate-500">
+              <span className="block text-sm text-slate-600">
                 Déjalo vacío para generarlo automáticamente. Puedes cambiarlo después.
               </span>
               <input

@@ -13,9 +13,9 @@ const tokenClasses: Record<TokenKind, string> = {
 export type LineState = 'selected' | 'correct' | 'wrong';
 
 const lineStateClasses: Record<LineState, string> = {
-  selected: 'bg-accent/35 ring-2 ring-inset ring-syn-keyword',
-  correct: 'bg-ok/40 ring-2 ring-inset ring-ok',
-  wrong: 'bg-bad/35 ring-2 ring-inset ring-bad',
+  selected: 'bg-white/[0.07] ring-2 ring-inset ring-syn-keyword',
+  correct: 'bg-ok/15 ring-2 ring-inset ring-ok',
+  wrong: 'bg-bad/15 ring-2 ring-inset ring-bad',
 };
 
 const lineStateIcons: Partial<Record<LineState, string>> = { correct: '✅', wrong: '❌' };
@@ -58,6 +58,7 @@ export function CodeBlock({
     <div
       role="group"
       aria-label={label}
+      tabIndex={onLineClick || replaceLine || insertAfter ? undefined : 0}
       className="bg-code overflow-x-auto rounded-xl py-3 font-mono text-[13px] leading-6 sm:text-sm"
     >
       <ol className="min-w-max">
@@ -68,9 +69,10 @@ export function CodeBlock({
             replaceLine?.line === n ? replaceLine.node : <CodeLine text={text || ' '} />;
           const row = (
             <div className="flex">
+              {onLineClick && <span className="sr-only">Línea {n}: </span>}
               <span
                 aria-hidden
-                className="w-10 shrink-0 pr-3 text-right text-slate-500 select-none"
+                className="w-10 shrink-0 pr-3 text-right text-slate-400 select-none"
               >
                 {n}
               </span>
@@ -89,7 +91,6 @@ export function CodeBlock({
                 <button
                   type="button"
                   onClick={() => onLineClick(n)}
-                  aria-label={`Línea ${n}: ${text.trim() || 'vacía'}`}
                   aria-pressed={state === 'selected'}
                   className="block w-full cursor-pointer text-left hover:bg-white/10 focus-visible:bg-white/10 focus-visible:outline-none"
                 >

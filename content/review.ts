@@ -1,7 +1,6 @@
 /**
  * Review topics (/repaso). Public content: texts and quiz questions.
  * Correct answers live in `server/quiz-answers.ts`.
- * DRAFT: texts and questions pending the teacher's approval.
  */
 
 export type Block =

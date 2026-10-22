@@ -104,12 +104,20 @@ function QuestionCard({
                       isCorrect
                         ? 'border-ok bg-ok/10 font-semibold'
                         : isWrong
-                          ? 'border-bad/50 bg-bad/5 text-slate-500'
+                          ? 'border-bad/50 bg-bad/5 text-slate-600'
                           : 'hover:border-accent hover:bg-card border-slate-200 bg-white disabled:hover:border-slate-200 disabled:hover:bg-white'
                     }`}
                   >
-                    {isCorrect && <span aria-label="Correcta">✅</span>}
-                    {isWrong && <span aria-label="Incorrecta">❌</span>}
+                    {isCorrect && (
+                      <span role="img" aria-label="Correcta">
+                        ✅
+                      </span>
+                    )}
+                    {isWrong && (
+                      <span role="img" aria-label="Incorrecta">
+                        ❌
+                      </span>
+                    )}
                     <RichText text={o.text} />
                   </button>
                 </li>

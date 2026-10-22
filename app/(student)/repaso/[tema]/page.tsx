@@ -24,7 +24,7 @@ export default async function ReviewTopicPage({ params }: PageProps<'/repaso/[te
   return (
     <article className="flex flex-col gap-8">
       <header>
-        <p className="text-sm font-semibold text-slate-500">
+        <p className="text-sm font-semibold text-slate-600">
           Repaso {index + 1} de {reviewTopics.length} · Clase {topic.lesson}
         </p>
         <h1 className="mt-1 text-2xl sm:text-3xl">{topic.title}</h1>

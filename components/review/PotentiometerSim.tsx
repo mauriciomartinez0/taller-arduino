@@ -94,7 +94,7 @@ export function PotentiometerSim() {
           <code>map(valor, 0, 1023, 0, 255)</code>
         </dt>
         <dd className="text-ink font-mono font-bold">{arduinoMap(reading, 0, 1023, 0, 255)}</dd>
-        <dd className="col-span-2 text-sm text-slate-500">
+        <dd className="col-span-2 text-sm text-slate-600">
           Gira la perilla con el mouse o el dedo (o con las flechas del teclado).
         </dd>
       </dl>

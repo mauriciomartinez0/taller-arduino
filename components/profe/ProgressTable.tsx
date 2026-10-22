@@ -50,7 +50,7 @@ export function ProgressTable({ classroomId, initial }: ProgressTableProps) {
 
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-sm text-slate-500" aria-live="polite">
+      <p className="text-sm text-slate-600" aria-live="polite">
         Se actualiza cada 15 s · última vez {updated}
         {error && (
           <span className="text-bad-ink ml-2 font-semibold">(sin conexión, reintentando)</span>
@@ -92,7 +92,7 @@ export function ProgressTable({ classroomId, initial }: ProgressTableProps) {
                   >
                     {s.displayName}
                     {s.partnerName && (
-                      <span className="block text-xs font-normal text-slate-500">
+                      <span className="block text-xs font-normal text-slate-600">
                         con {s.partnerName}
                       </span>
                     )}
@@ -109,13 +109,13 @@ export function ProgressTable({ classroomId, initial }: ProgressTableProps) {
                           type="button"
                           onClick={() => setCell({ student: s, caseId })}
                           className="hover:bg-card flex min-h-11 w-full min-w-11 flex-col items-center justify-center rounded-lg"
-                          aria-label={`${s.displayName}, caso ${caseId}: ${statusLabel(status)}${
-                            p ? `, ${p.hintsUsed} pistas` : ''
-                          }. Ver intentos`}
                         >
+                          <span className="sr-only">
+                            {s.displayName}, caso {caseId}:{' '}
+                          </span>
                           <StatusIcon status={status} />
                           {p && status !== 'not_started' && (
-                            <span className="text-[10px] leading-tight text-slate-500" aria-hidden>
+                            <span className="text-[10px] leading-tight text-slate-600" aria-hidden>
                               {p.hintsUsed > 0 && `💡${p.hintsUsed} `}
                               {caseDuration(p)}
                             </span>
@@ -160,7 +160,7 @@ export function ProgressTable({ classroomId, initial }: ProgressTableProps) {
         </div>
       )}
 
-      <p className="text-xs text-slate-500">
+      <p className="text-xs text-slate-600">
         ✅ resuelto · 🟡 en progreso · ⛔ vio la solución · 💡 pistas usadas. Haz clic en una celda
         para ver los intentos.
       </p>
@@ -249,14 +249,14 @@ function AttemptsDialog({
           </p>
         )}
         {attempts === null ? (
-          <p className="text-slate-500">Cargando…</p>
+          <p className="text-slate-600">Cargando…</p>
         ) : attempts.length === 0 ? (
-          <p className="text-slate-500">Sin intentos todavía.</p>
+          <p className="text-slate-600">Sin intentos todavía.</p>
         ) : (
           <ol className="flex max-h-[60vh] flex-col gap-1 overflow-y-auto text-sm">
             {attempts.map((a) => (
               <li key={a.id} className="odd:bg-card flex items-baseline gap-2 rounded-lg px-2 py-1">
-                <span aria-label={a.isCorrect ? 'Correcto' : 'Incorrecto'}>
+                <span role="img" aria-label={a.isCorrect ? 'Correcto' : 'Incorrecto'}>
                   {a.step === 'hint'
                     ? '💡'
                     : a.step === 'give_up'
@@ -265,7 +265,7 @@ function AttemptsDialog({
                         ? '✅'
                         : '❌'}
                 </span>
-                <span className="text-slate-500 tabular-nums">
+                <span className="text-slate-600 tabular-nums">
                   {new Date(a.createdAt).toLocaleTimeString('es-CO', {
                     timeZone: 'America/Bogota',
                     hour: '2-digit',

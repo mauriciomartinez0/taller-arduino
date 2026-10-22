@@ -51,6 +51,7 @@ export function JoinForm({ currentStudent }: { currentStudent?: string }) {
   }
 
   const error = state.status === 'error' ? state : null;
+  const values = state.status === 'error' || state.status === 'needsPin' ? state.values : undefined;
   const askPin = state.status === 'needsPin' || error?.field === 'pin';
 
   return (
@@ -58,11 +59,12 @@ export function JoinForm({ currentStudent }: { currentStudent?: string }) {
       <h2 className="text-xl">Entrar a la clase</h2>
       <label className="block">
         <span className="font-semibold">Tu nombre</span>
-        <span className="block text-sm text-slate-500">
+        <span className="block text-sm text-slate-600">
           Nombre e inicial del apellido: “Sara M.”
         </span>
         <input
           name="displayName"
+          defaultValue={values?.displayName}
           required
           maxLength={30}
           autoComplete="off"
@@ -72,13 +74,20 @@ export function JoinForm({ currentStudent }: { currentStudent?: string }) {
       </label>
       <label className="block">
         <span className="font-semibold">Tu pareja</span>{' '}
-        <span className="text-sm text-slate-500">(opcional)</span>
-        <input name="partnerName" maxLength={30} autoComplete="off" className={inputClass} />
+        <span className="text-sm text-slate-600">(opcional)</span>
+        <input
+          name="partnerName"
+          defaultValue={values?.partnerName}
+          maxLength={30}
+          autoComplete="off"
+          className={inputClass}
+        />
       </label>
       <label className="block">
         <span className="font-semibold">Código de la clase</span>
         <input
           name="joinCode"
+          defaultValue={values?.joinCode}
           required
           maxLength={20}
           autoComplete="off"
@@ -91,7 +100,7 @@ export function JoinForm({ currentStudent }: { currentStudent?: string }) {
       {askPin && (
         <label className="block">
           <span className="font-semibold">PIN</span>
-          <span className="block text-sm text-slate-500">Los 4 números que anotaste.</span>
+          <span className="block text-sm text-slate-600">Los 4 números que anotaste.</span>
           <input
             name="pin"
             inputMode="numeric"

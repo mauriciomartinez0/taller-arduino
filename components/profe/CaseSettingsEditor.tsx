@@ -55,7 +55,7 @@ export function CaseSettingsEditor({
                       initial={s.wokwiUrl ?? ''}
                     />
                   ) : (
-                    <span className="text-slate-500">No aplica: no se puede simular.</span>
+                    <span className="text-slate-600">No aplica: no se puede simular.</span>
                   )}
                 </td>
               </tr>

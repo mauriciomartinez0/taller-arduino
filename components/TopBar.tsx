@@ -44,7 +44,7 @@ export function TopBar({ student }: TopBarProps) {
           <span className="text-right leading-tight">
             <span className="text-ink block font-semibold">{student.displayName}</span>
             {student.partnerName && (
-              <span className="block text-xs text-slate-500">con {student.partnerName}</span>
+              <span className="block text-xs text-slate-600">con {student.partnerName}</span>
             )}
           </span>
           <span className="bg-card text-accent-strong rounded-full px-3 py-1 font-bold">

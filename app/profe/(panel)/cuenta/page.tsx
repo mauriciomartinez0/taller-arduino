@@ -24,7 +24,7 @@ export default function AccountPage() {
           </label>
           <label className="block">
             <span className="font-semibold">Nueva contraseña</span>
-            <span className="block text-sm text-slate-500">Mínimo 10 caracteres.</span>
+            <span className="block text-sm text-slate-600">Mínimo 10 caracteres.</span>
             <input
               name="next"
               type="password"

@@ -126,6 +126,8 @@ Cada vez que hagas `git push`, Vercel publica la nueva versión sola. Si cambias
 
 Cuando crees otra clase, los enlaces de Wokwi se copian de tu clase más reciente.
 
+En la página de la clase, **Proyectar en el tablero** abre una vista con el porcentaje de la clase que va resolviendo cada caso, sin nombres de estudiantes ni tu correo.
+
 ---
 
 ## 3. Cómo está hecho

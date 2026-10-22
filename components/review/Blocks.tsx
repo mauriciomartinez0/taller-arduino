@@ -113,7 +113,7 @@ export function Blocks({ blocks }: { blocks: Block[] }) {
               <div key={i} className="grid gap-3 sm:grid-cols-2">
                 {SENSORS.map((s) => (
                   <Card key={s.name} tone="accent" className="flex flex-col gap-1">
-                    <h3 className="text-base">{s.name}</h3>
+                    <h2 className="text-base">{s.name}</h2>
                     <p>
                       <span className="font-semibold">Qué mide: </span>
                       {s.measures}

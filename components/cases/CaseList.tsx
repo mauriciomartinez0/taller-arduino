@@ -34,7 +34,7 @@ export function CaseList({ progress, openCases }: CaseListProps) {
                     </span>
                     <span className="flex-1">
                       <span className="text-ink block font-semibold">{c.title}</span>
-                      <span className="text-sm text-slate-500">
+                      <span className="text-sm text-slate-600">
                         {open ? c.typeLabel : 'Todavía no está abierto'}
                       </span>
                     </span>

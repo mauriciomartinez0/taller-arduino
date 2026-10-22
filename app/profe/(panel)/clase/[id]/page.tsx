@@ -32,10 +32,14 @@ export default async function ClassroomPage({ params }: PageProps<'/profe/clase/
           <span className="bg-ink rounded-lg px-2 py-1 font-mono font-bold text-white">
             {classroom.joinCode}
           </span>
-          <a
-            href={`/api/profe/clase/${classroom.id}/csv`}
-            className={buttonClasses('secondary', 'ml-auto')}
+          <Link
+            href={`/profe/proyectar/${classroom.id}`}
+            target="_blank"
+            className={buttonClasses('ghost', 'ml-auto')}
           >
+            Proyectar en el tablero ↗
+          </Link>
+          <a href={`/api/profe/clase/${classroom.id}/csv`} className={buttonClasses('secondary')}>
             Exportar a CSV
           </a>
         </div>

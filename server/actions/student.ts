@@ -10,11 +10,19 @@ import { encryptPin, generatePin, hashToken, pinMatches, randomToken } from '../
 import { clearFailures, isLocked, recordFailure } from '../rate-limit';
 import { clearStudentCookie, rotateStudentToken, setStudentCookie } from '../student-session';
 
+/** What the student typed, sent back so the form keeps it after an error. */
+export type JoinValues = { displayName: string; partnerName: string; joinCode: string };
+
 export type JoinState =
   | { status: 'idle' }
-  | { status: 'error'; message: string; field?: 'displayName' | 'joinCode' | 'pin' }
+  | {
+      status: 'error';
+      message: string;
+      field?: 'displayName' | 'joinCode' | 'pin';
+      values: JoinValues;
+    }
   /** The name exists in this class: ask for the PIN. */
-  | { status: 'needsPin'; message: string }
+  | { status: 'needsPin'; message: string; values: JoinValues }
   /** New student: show the PIN once before continuing. */
   | { status: 'created'; pin: string; displayName: string };
 
@@ -52,6 +60,11 @@ const NAME_TAKEN =
   'Ese nombre ya está en uso. Si eres tú, escribe tu PIN; si no, agrega otra letra (por ejemplo “Sara Mo.”).';
 
 export async function joinClass(_prev: JoinState, formData: FormData): Promise<JoinState> {
+  const values: JoinValues = {
+    displayName: String(formData.get('displayName') ?? '').slice(0, 60),
+    partnerName: String(formData.get('partnerName') ?? '').slice(0, 60),
+    joinCode: String(formData.get('joinCode') ?? '').slice(0, 30),
+  };
   const parsed = joinSchema.safeParse({
     displayName: formData.get('displayName') ?? '',
     partnerName: formData.get('partnerName') ?? '',
@@ -61,7 +74,7 @@ export async function joinClass(_prev: JoinState, formData: FormData): Promise<J
   if (!parsed.success) {
     const issue = parsed.error.issues[0];
     const field = issue.path[0] as 'displayName' | 'joinCode' | 'pin';
-    return { status: 'error', message: issue.message, field };
+    return { status: 'error', message: issue.message, field, values };
   }
   const { displayName, partnerName, joinCode, pin } = parsed.data;
 
@@ -75,10 +88,11 @@ export async function joinClass(_prev: JoinState, formData: FormData): Promise<J
       status: 'error',
       message: 'No encontramos esa clase. Revisa el código.',
       field: 'joinCode',
+      values,
     };
   }
   if (!classroom.isActive) {
-    return { status: 'error', message: 'La clase está cerrada.', field: 'joinCode' };
+    return { status: 'error', message: 'La clase está cerrada.', field: 'joinCode', values };
   }
 
   const [existing] = await db
@@ -93,7 +107,7 @@ export async function joinClass(_prev: JoinState, formData: FormData): Promise<J
     .limit(1);
 
   if (existing) {
-    if (!pin) return { status: 'needsPin', message: NAME_TAKEN };
+    if (!pin) return { status: 'needsPin', message: NAME_TAKEN, values };
 
     const lockKey = `pin:${classroom.id}:${displayName.toLowerCase()}`;
     if (await isLocked(lockKey)) {
@@ -101,11 +115,12 @@ export async function joinClass(_prev: JoinState, formData: FormData): Promise<J
         status: 'error',
         message: 'Demasiados intentos. Espera 10 minutos o pídele el PIN al profe.',
         field: 'pin',
+        values,
       };
     }
     if (!pinMatches(existing.pinEncrypted, pin)) {
       await recordFailure(lockKey);
-      return { status: 'error', message: 'Ese PIN no coincide.', field: 'pin' };
+      return { status: 'error', message: 'Ese PIN no coincide.', field: 'pin', values };
     }
     await clearFailures(lockKey);
     if (partnerName) {
@@ -127,7 +142,7 @@ export async function joinClass(_prev: JoinState, formData: FormData): Promise<J
     });
   } catch {
     // Someone took the name a moment ago (unique index).
-    return { status: 'needsPin', message: NAME_TAKEN };
+    return { status: 'needsPin', message: NAME_TAKEN, values };
   }
   await setStudentCookie(token);
   return { status: 'created', pin: newPin, displayName };
