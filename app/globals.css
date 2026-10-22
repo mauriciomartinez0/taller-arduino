@@ -1,0 +1,82 @@
+@import 'tailwindcss';
+
+@theme {
+  /* Slide palette */
+  --color-ink: #10494f; /* titles */
+  --color-accent: #0f8c90; /* accent, borders, large text */
+  --color-accent-strong: #0b6f73; /* buttons and links: AA on white */
+  --color-warn: #e0a21b; /* hints and notices (background/border only) */
+  --color-warn-ink: #7a5408; /* text on warn backgrounds */
+  --color-ok: #2f9e57;
+  --color-ok-ink: #1d6b3a;
+  --color-bad: #d24a3c;
+  --color-bad-ink: #9c2f24;
+  --color-card: #f3f9f9;
+  --color-code: #17262a;
+
+  /* Syntax highlighting */
+  --color-syn-keyword: #5fc8da;
+  --color-syn-function: #bcd94a;
+  --color-syn-number: #b892f2;
+  --color-syn-comment: #8d8676;
+  --color-syn-string: #e8d36d;
+  --color-syn-text: #e6eef0;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+
+  body {
+    @apply bg-white font-sans text-slate-800 antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply text-ink font-bold;
+  }
+
+  /* No ligatures in code: students must see = and == (and != , <=) as separate characters. */
+  .font-mono,
+  code,
+  pre,
+  input {
+    font-variant-ligatures: none;
+    font-feature-settings:
+      'liga' 0,
+      'calt' 0;
+  }
+
+  :focus-visible {
+    @apply outline-accent-strong outline-2 outline-offset-2;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@utility animate-pop {
+  animation: pop 220ms ease-out;
+}
