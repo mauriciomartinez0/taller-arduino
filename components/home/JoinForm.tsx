@@ -128,9 +128,6 @@ export function JoinForm({ currentStudent }: { currentStudent?: string }) {
       <button type="submit" disabled={pending} className={buttonClasses('primary')}>
         {pending ? 'Entrando…' : 'Entrar'}
       </button>
-      <p className="text-sm text-slate-600">
-        Solo guardamos tu nombre corto y tus respuestas para que el profe vea el avance de la clase.
-      </p>
     </form>
   );
 }
