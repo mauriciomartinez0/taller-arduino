@@ -134,16 +134,17 @@ En la página de la clase, **Proyectar en el tablero** abre una vista con el por
 
 ```text
 app/                  Páginas (App Router) y rutas de la API
-  (student)/          Casos, repaso, proyectos y retos (requieren haber entrado)
+  (student)/          Casos, clases, repaso, proyectos y retos (requieren haber entrado)
   profe/              Login y panel del profe
   api/                Verificación de respuestas, pistas, quices, panel y CSV
 components/           Interfaz (casos, circuitos SVG, repaso, panel)
   circuit/            Protoboard, Arduino UNO, cables, LED, resistencia, botón, potenciómetro
-content/              Contenido público: casos, repaso, proyectos y retos
+content/              Contenido público: casos, clases, repaso, proyectos y retos
 server/               Código que solo corre en el servidor (respuestas, sesiones, base de datos)
 db/                   Esquema de Drizzle y conexión
 drizzle/              Migraciones SQL
 scripts/              create-teacher y seed
+public/clases/        Diapositivas de cada clase (imágenes) y sus PDF, sin las soluciones del profe
 public/proyectos/     PDF de las fichas del proyecto final e imágenes de los diagramas de flujo
 ```
 

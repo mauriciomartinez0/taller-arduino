@@ -7,6 +7,7 @@ import { leaveClass } from '@/server/actions/student';
 
 const links = [
   { href: '/casos', label: 'Casos' },
+  { href: '/clases', label: 'Clases' },
   { href: '/repaso', label: 'Repaso' },
   { href: '/proyectos', label: 'Proyectos' },
   ...(CHALLENGES_ENABLED ? [{ href: '/retos', label: 'Retos' }] : []),
