@@ -1,7 +1,10 @@
+import { CircuitDiagram } from '@/components/circuit/CircuitDiagram';
 import { CodeBlock } from '@/components/code/CodeBlock';
 import { Card } from '@/components/ui/Card';
 import { RichText } from '@/components/ui/RichText';
 import { SENSORS, type Block } from '@/content/review';
+import { getScene } from '@/server/circuits';
+import { ButtonSim } from './ButtonSim';
 import { IfSlider } from './IfSlider';
 import { PotentiometerSim } from './PotentiometerSim';
 import { PwmSlider } from './PwmSlider';
@@ -29,6 +32,7 @@ const INTERACTIVES = {
   potentiometer: PotentiometerSim,
   'if-slider': IfSlider,
   'pwm-slider': PwmSlider,
+  button: ButtonSim,
 };
 
 export function Blocks({ blocks }: { blocks: Block[] }) {
@@ -107,6 +111,21 @@ export function Blocks({ blocks }: { blocks: Block[] }) {
           case 'interactive': {
             const Interactive = INTERACTIVES[block.id];
             return <Interactive key={i} />;
+          }
+          case 'circuit': {
+            const scene = getScene(block.scene);
+            if (!scene) return null;
+            return (
+              <figure
+                key={i}
+                className="flex flex-col gap-2 rounded-2xl border-2 border-slate-200 bg-white p-3"
+              >
+                <CircuitDiagram scene={scene} label={block.caption.replace(/[`*]/g, '')} />
+                <figcaption className="text-center text-slate-600">
+                  <Text text={block.caption} />
+                </figcaption>
+              </figure>
+            );
           }
           case 'sensors':
             return (

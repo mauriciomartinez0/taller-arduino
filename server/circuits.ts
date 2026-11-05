@@ -17,8 +17,8 @@ import {
 import type { LedColor } from '@/components/circuit/parts';
 
 /**
- * Circuit scenes for the A cases. Built on the server so the corrected versions only
- * reach the browser once the case is solved.
+ * Circuit scenes for the cases and the review pages. Built on the server so the corrected
+ * versions only reach the browser once the case is solved.
  */
 
 const BANDS_220 = ['red', 'red', 'brown', 'gold'];
@@ -75,24 +75,24 @@ function compactLed({ pin: from, col, color, wire, lane }: LedGroup): ScenePart[
   ];
 }
 
-/** C3: green 8, yellow 9, red 10 and a potentiometer on A0 (legs 16, 18, 20). */
-function alarmCircuit(): ScenePart[] {
+/** 5V (bottom header) → + rail, column 1, around the left side of the Arduino. */
+function fiveVoltToRail(): ScenePart {
+  return {
+    kind: 'wire',
+    color: 'red',
+    points: route(
+      pin('5V'),
+      { y: BOTTOM_LANES.first },
+      { x: SIDE_LANES.left2 },
+      { y: railHole(1, 'bottom+').y },
+      { x: columnX(1) },
+    ),
+  };
+}
+
+/** Potentiometer with legs 16 (+ rail), 18 (A0) and 20 (− rail). */
+function potOnA0Right(): ScenePart[] {
   return [
-    gndToRail(),
-    {
-      kind: 'wire',
-      color: 'red',
-      points: route(
-        pin('5V'),
-        { y: BOTTOM_LANES.first },
-        { x: SIDE_LANES.left2 },
-        { y: railHole(1, 'bottom+').y },
-        { x: columnX(1) },
-      ),
-    },
-    ...compactLed({ pin: '10', col: 3, color: 'red', wire: 'red', lane: LANES.lower - 4 }),
-    ...compactLed({ pin: '9', col: 7, color: 'yellow', wire: 'yellow', lane: LANES.upper }),
-    ...compactLed({ pin: '8', col: 11, color: 'green', wire: 'green', lane: LANES.lower + 8 }),
     { kind: 'potentiometer', col: 16 },
     {
       kind: 'wire',
@@ -108,6 +108,28 @@ function alarmCircuit(): ScenePart[] {
     },
     { kind: 'wire', color: 'red', points: [hole(16, 'i'), railHole(16, 'bottom+')] },
     { kind: 'wire', color: 'black', points: [hole(20, 'i'), railHole(20, 'bottom-')] },
+  ];
+}
+
+/** C3: green 8, yellow 9, red 10 and a potentiometer on A0 (legs 16, 18, 20). */
+function alarmCircuit(): ScenePart[] {
+  return [
+    gndToRail(),
+    fiveVoltToRail(),
+    ...compactLed({ pin: '10', col: 3, color: 'red', wire: 'red', lane: LANES.lower - 4 }),
+    ...compactLed({ pin: '9', col: 7, color: 'yellow', wire: 'yellow', lane: LANES.upper }),
+    ...compactLed({ pin: '8', col: 11, color: 'green', wire: 'green', lane: LANES.lower + 8 }),
+    ...potOnA0Right(),
+  ];
+}
+
+/** Review: the potentiometer on A0 sets the brightness of an LED on pin 9 (PWM). */
+function dimmerCircuit(): ScenePart[] {
+  return [
+    gndToRail(),
+    fiveVoltToRail(),
+    ...compactLed({ pin: '9', col: 3, color: 'yellow', wire: 'green', lane: LANES.lower }),
+    ...potOnA0Right(),
   ];
 }
 
@@ -162,23 +184,29 @@ function ledCircuit({
   return parts;
 }
 
-function buttonCircuit(gndColumn: 4 | 6): ScenePart[] {
-  const greenWire: ScenePart = {
-    kind: 'wire',
-    id: 'wireButtonSignal',
-    color: 'green',
-    points: route(
-      pin('2'),
-      { y: LANES.upper },
-      { x: columnX(3) + PITCH / 2 },
-      { y: hole(4, 'h').y },
-      { x: columnX(4) },
-    ),
-  };
+/** Push button on pin 2 (signal 4h) with its GND jumper in column 4 (A5 bug) or 6. */
+function buttonOnPin2(gndColumn: 4 | 6): ScenePart[] {
   return [
     { kind: 'button', id: 'button', col: 4 },
-    greenWire,
+    {
+      kind: 'wire',
+      id: 'wireButtonSignal',
+      color: 'green',
+      points: route(
+        pin('2'),
+        { y: LANES.upper },
+        { x: columnX(3) + PITCH / 2 },
+        { y: hole(4, 'h').y },
+        { x: columnX(4) },
+      ),
+    },
     jumperToRail('jumperButtonGnd', gndColumn),
+  ];
+}
+
+function buttonCircuit(gndColumn: 4 | 6): ScenePart[] {
+  return [
+    ...buttonOnPin2(gndColumn),
     // With the bug the pin always reads LOW ("pressed"), so the LED is always on.
     ...ledCircuit({ color: 'green', lit: gndColumn === 4 ? 'normal' : undefined }),
   ];
@@ -263,6 +291,12 @@ const scenes: Record<string, Scene> = {
   C5: { usedPins: ['GND', '8'], parts: ledCircuit() },
   'C5-fixed': { usedPins: ['GND', '9'], parts: ledCircuit({ signalPin: '9', lit: 'normal' }) },
   C6: { usedPins: ['GND', '2', '8'], parts: buttonCircuit(6) },
+
+  // Review pages (/repaso): reference circuits, always correct.
+  'repaso-pot': { usedPins: ['5V', 'GND', 'A0'], parts: potCircuit(true) },
+  'repaso-pot-led': { usedPins: ['5V', 'GND', 'A0', '9'], parts: dimmerCircuit() },
+  'repaso-boton': { usedPins: ['GND', '2'], parts: [gndToRail(), ...buttonOnPin2(6)] },
+  'repaso-boton-led': { usedPins: ['GND', '2', '8'], parts: buttonCircuit(6) },
 };
 
 export function getScene(id: string): Scene | undefined {

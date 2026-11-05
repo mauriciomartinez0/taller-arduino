@@ -12,8 +12,10 @@ export type Block =
   | { type: 'heading'; text: string }
   | {
       type: 'interactive';
-      id: 'resistor-calculator' | 'potentiometer' | 'if-slider' | 'pwm-slider';
+      id: 'resistor-calculator' | 'potentiometer' | 'if-slider' | 'pwm-slider' | 'button';
     }
+  /** Breadboard diagram; `scene` is an id from `server/circuits.ts`. */
+  | { type: 'circuit'; scene: string; caption: string }
   | { type: 'sensors' };
 
 export type QuizQuestion = { id: string; prompt: string; options: { id: string; text: string }[] };
@@ -331,6 +333,281 @@ void loop() {
         ['128', '128'],
         ['255', '255'],
         ['1023', '1023'],
+      ]),
+    ],
+  },
+  {
+    slug: 'conectar-potenciometro',
+    title: 'Cómo conectar un potenciómetro',
+    summary: 'Paso a paso en la protoboard, con dos ejemplos: leerlo y controlar un LED.',
+    lesson: 3,
+    blocks: [
+      {
+        type: 'p',
+        text: 'Necesitas un potenciómetro (el del kit dice B10K), 3 cables y el Arduino. El potenciómetro tiene 3 patas y cada una tiene su lugar:',
+      },
+      {
+        type: 'table',
+        head: ['Pata', 'Va a', 'Para qué'],
+        rows: [
+          ['Izquierda', '5V (fila + de la protoboard)', 'Un extremo de la pista recibe 5 V.'],
+          ['Medio (cursor)', 'A0', 'Entrega el voltaje que eliges con la perilla.'],
+          ['Derecha', 'GND (fila − de la protoboard)', 'El otro extremo de la pista queda en 0 V.'],
+        ],
+      },
+      {
+        type: 'circuit',
+        scene: 'repaso-pot',
+        caption:
+          'Patas en las columnas 8, 10 y 12. Rojo: 5V → fila + → pata izquierda. Amarillo: A0 → pata del medio. Negro: pata derecha → fila − → GND.',
+      },
+      { type: 'heading', text: 'Paso a paso' },
+      {
+        type: 'list',
+        items: [
+          'Pon el potenciómetro en la protoboard con **cada pata en una columna distinta**.',
+          'Lleva **5V** del Arduino a la fila **+** y **GND** a la fila **−** de la protoboard.',
+          'Une la **pata izquierda** con la fila + y la **pata derecha** con la fila −.',
+          'Une la **pata del medio** con el pin **A0**.',
+          'Sube el ejemplo 1 y abre el Monitor Serie: al girar, el número debe ir de 0 a 1023.',
+        ],
+      },
+      {
+        type: 'callout',
+        tone: 'accent',
+        text: 'Si intercambias las patas de los extremos (5V a la derecha y GND a la izquierda) no pasa nada malo: solo cambia el sentido de giro. La pata del medio sí tiene que ir siempre a A0.',
+      },
+      { type: 'heading', text: 'Ejemplo 1: ver el valor en el Monitor Serie' },
+      {
+        type: 'code',
+        code: `const int POT = A0;
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  int valor = analogRead(POT);   // de 0 a 1023
+  Serial.println(valor);
+  delay(200);
+}`,
+      },
+      { type: 'heading', text: 'Ejemplo 2: controlar el brillo de un LED' },
+      {
+        type: 'p',
+        text: 'Se agrega un LED con su resistencia de 220 Ω en el pin **9** (tiene ~, así que sirve para `analogWrite`). El potenciómetro sigue en A0.',
+      },
+      {
+        type: 'circuit',
+        scene: 'repaso-pot-led',
+        caption:
+          'Verde: pin 9 → resistencia → LED → fila −. Potenciómetro en las columnas 16, 18 y 20, con la pata del medio a A0 (azul).',
+      },
+      {
+        type: 'code',
+        code: `const int POT = A0;
+const int LED = 9;               // pin con ~ (PWM)
+
+void setup() {
+  pinMode(LED, OUTPUT);
+}
+
+void loop() {
+  int valor = analogRead(POT);              // 0 a 1023
+  int brillo = map(valor, 0, 1023, 0, 255); // 0 a 255
+  analogWrite(LED, brillo);
+}`,
+      },
+      {
+        type: 'p',
+        text: 'Gira la perilla: el último número es el brillo que recibe el LED.',
+      },
+      { type: 'interactive', id: 'potentiometer' },
+      { type: 'heading', text: 'Si algo no funciona' },
+      {
+        type: 'list',
+        items: [
+          '**Siempre marca 0 o siempre 1023:** la pata del medio no está en A0, o falta el cable de 5V o el de GND.',
+          '**El número salta solo:** el cable de A0 está flojo o la pata del medio no está bien metida.',
+          '**El LED solo prende o apaga, sin brillos intermedios:** el LED está en un pin sin ~.',
+        ],
+      },
+      {
+        type: 'callout',
+        tone: 'warn',
+        text: 'Nunca conectes la pata del medio a 5V o a GND: al girar la perilla hasta el extremo harías un cortocircuito.',
+      },
+    ],
+    quiz: [
+      q('conectar-potenciometro-1', '¿A dónde van las patas de los extremos del potenciómetro?', [
+        ['5v-gnd', 'Una a 5V y la otra a GND'],
+        ['a0-a1', 'Una a A0 y la otra a A1'],
+        ['5v-5v', 'Las dos a 5V'],
+        ['pin9', 'Una al pin 9 y la otra a GND'],
+      ]),
+      q(
+        'conectar-potenciometro-2',
+        'El Monitor Serie siempre muestra 1023, gires como gires. ¿Qué es lo más probable?',
+        [
+          ['codigo', 'Falta `Serial.begin(9600)`'],
+          ['gnd', 'Falta el cable de GND (o la pata del medio está en 5V)'],
+          ['led', 'El LED está al revés'],
+          ['delay', 'El `delay` es muy corto'],
+        ],
+      ),
+      q(
+        'conectar-potenciometro-3',
+        'Para controlar el brillo de un LED con el potenciómetro, ¿en qué pin pones el LED?',
+        [
+          ['a0', 'En A0'],
+          ['pwm', 'En un pin con ~, como el 9'],
+          ['cualquiera', 'En cualquier pin digital'],
+          ['5v', 'En 5V'],
+        ],
+      ),
+      q(
+        'conectar-potenciometro-4',
+        '¿Qué pasa si intercambias 5V y GND en las patas de los extremos?',
+        [
+          ['quema', 'Se quema el Arduino'],
+          ['sentido', 'Cambia el sentido de giro: el número sube hacia el otro lado'],
+          ['cero', 'Siempre lee 0'],
+          ['nada', 'Deja de funcionar'],
+        ],
+      ),
+    ],
+  },
+  {
+    slug: 'conectar-boton',
+    title: 'Cómo conectar un pulsador',
+    summary: 'Las 4 patas, `INPUT_PULLUP` y dos ejemplos: leerlo y prender un LED.',
+    lesson: 3,
+    blocks: [
+      {
+        type: 'p',
+        text: 'El pulsador (botón) del kit tiene **4 patas**, pero funciona como un interruptor de 2 lados: las patas que quedan enfrentadas a través del canal del medio de la protoboard están unidas por dentro. Al presionar, se unen las dos columnas.',
+      },
+      {
+        type: 'table',
+        head: ['Botón', 'Columnas 4 y 6', 'Qué lee el pin'],
+        rows: [
+          ['Suelto', 'Separadas', 'HIGH'],
+          ['Presionado', 'Unidas', 'LOW'],
+        ],
+      },
+      {
+        type: 'circuit',
+        scene: 'repaso-boton',
+        caption:
+          'El botón cruza el canal del medio, con patas en las columnas 4 y 6. Verde: pin 2 → columna 4. Negro: columna 6 → fila − → GND.',
+      },
+      { type: 'heading', text: 'Paso a paso' },
+      {
+        type: 'list',
+        items: [
+          'Pon el botón **sobre el canal del medio** de la protoboard (dos patas arriba y dos abajo).',
+          'Lleva **GND** del Arduino a la fila **−**.',
+          'Une **una columna del botón** (la 4) con el **pin 2**.',
+          'Une **la otra columna** (la 6) con la fila **−**.',
+          'En el código usa `pinMode(2, INPUT_PULLUP);`.',
+        ],
+      },
+      { type: 'heading', text: '¿Por qué presionado es LOW?' },
+      {
+        type: 'p',
+        text: '`INPUT_PULLUP` prende una resistencia que está **dentro del Arduino** y que une el pin con 5V. Con el botón suelto, el pin queda en 5 V: lee **HIGH**. Al presionar, el botón une el pin con GND: lee **LOW**. Mantén presionado el botón para verlo:',
+      },
+      { type: 'interactive', id: 'button' },
+      {
+        type: 'callout',
+        tone: 'accent',
+        text: 'Con `INPUT_PULLUP` no necesitas resistencia ni cable a 5V: solo el pin, el botón y GND.',
+      },
+      { type: 'heading', text: 'Ejemplo 1: ver el botón en el Monitor Serie' },
+      {
+        type: 'code',
+        code: `const int BOTON = 2;
+
+void setup() {
+  pinMode(BOTON, INPUT_PULLUP);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int estado = digitalRead(BOTON);
+  Serial.println(estado);        // 1 = suelto, 0 = presionado
+  delay(200);
+}`,
+      },
+      { type: 'heading', text: 'Ejemplo 2: el LED prende mientras presionas' },
+      {
+        type: 'circuit',
+        scene: 'repaso-boton-led',
+        caption:
+          'Mismo botón en el pin 2, y un LED en el pin 8 (azul) con su resistencia de 220 Ω.',
+      },
+      {
+        type: 'code',
+        code: `const int BOTON = 2;
+const int LED = 8;
+
+void setup() {
+  pinMode(BOTON, INPUT_PULLUP);
+  pinMode(LED, OUTPUT);
+}
+
+void loop() {
+  int estado = digitalRead(BOTON);
+  if (estado == LOW) {           // presionado
+    digitalWrite(LED, HIGH);
+  } else {
+    digitalWrite(LED, LOW);
+  }
+}`,
+      },
+      { type: 'heading', text: 'Si algo no funciona' },
+      {
+        type: 'list',
+        items: [
+          '**El LED está siempre prendido:** el cable del pin y el de GND están en la misma columna del botón. Pásalo a la otra columna.',
+          '**Funciona al revés:** con `INPUT_PULLUP`, presionado es `LOW`. Revisa el `if`.',
+          '**Lee números al azar sin tocarlo:** falta `INPUT_PULLUP` en el `pinMode` y el pin queda “al aire”.',
+          '**Nunca cambia:** el botón no cruza el canal del medio, o falta el cable a GND.',
+        ],
+      },
+    ],
+    quiz: [
+      q(
+        'conectar-boton-1',
+        'Con `INPUT_PULLUP`, ¿qué lee `digitalRead` cuando presionas el botón?',
+        [
+          ['high', 'HIGH'],
+          ['low', 'LOW'],
+          ['1023', '1023'],
+          ['nada', 'No lee nada'],
+        ],
+      ),
+      q('conectar-boton-2', 'Con `INPUT_PULLUP`, ¿a qué conectas el botón?', [
+        ['pin-gnd', 'Un lado al pin y el otro a GND'],
+        ['pin-5v', 'Un lado al pin y el otro a 5V'],
+        ['5v-gnd', 'Un lado a 5V y el otro a GND'],
+        ['a0', 'Un lado a A0 y el otro al pin 2'],
+      ]),
+      q(
+        'conectar-boton-3',
+        'El LED está prendido siempre, aunque no presiones. El cable del pin y el de GND están en la misma columna. ¿Qué haces?',
+        [
+          ['codigo', 'Quitar `INPUT_PULLUP` del código'],
+          ['columna', 'Pasar el cable de GND a la otra columna del botón'],
+          ['5v', 'Conectar el cable de GND a 5V'],
+          ['led', 'Girar el LED'],
+        ],
+      ),
+      q('conectar-boton-4', '¿Dónde se pone el botón en la protoboard?', [
+        ['canal', 'Cruzando el canal del medio'],
+        ['fila', 'En la fila + o −'],
+        ['columna', 'Con las 4 patas en la misma columna'],
+        ['fuera', 'Fuera de la protoboard'],
       ]),
     ],
   },

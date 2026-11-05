@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { cases } from '@/content/cases';
+import { reviewTopics } from '@/content/review';
 import { answers } from './answers';
 import { getScene } from './circuits';
 
@@ -49,5 +50,13 @@ describe('circuit scenes', () => {
 
   it('A4 highlights pin 9', () => {
     expect(getScene('A4')!.usedPins).toContain('9');
+  });
+
+  it('every circuit in the review pages exists', () => {
+    for (const topic of reviewTopics) {
+      for (const block of topic.blocks) {
+        if (block.type === 'circuit') expect(getScene(block.scene), block.scene).toBeDefined();
+      }
+    }
   });
 });
