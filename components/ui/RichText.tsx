@@ -14,3 +14,20 @@ export function RichText({ text }: { text: string }) {
     </>
   );
 }
+
+/** Renders **bold** and `inline code`. */
+export function FormattedText({ text }: { text: string }) {
+  return (
+    <>
+      {text.split(/(\*\*[^*]+\*\*)/).map((part, i) =>
+        part.startsWith('**') ? (
+          <strong key={i} className="text-ink">
+            <RichText text={part.slice(2, -2)} />
+          </strong>
+        ) : (
+          <RichText key={i} text={part} />
+        ),
+      )}
+    </>
+  );
+}

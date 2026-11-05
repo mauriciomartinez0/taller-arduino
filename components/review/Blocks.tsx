@@ -1,7 +1,7 @@
 import { CircuitDiagram } from '@/components/circuit/CircuitDiagram';
 import { CodeBlock } from '@/components/code/CodeBlock';
 import { Card } from '@/components/ui/Card';
-import { RichText } from '@/components/ui/RichText';
+import { FormattedText as Text } from '@/components/ui/RichText';
 import { SENSORS, type Block } from '@/content/review';
 import { getScene } from '@/server/circuits';
 import { ButtonSim } from './ButtonSim';
@@ -9,23 +9,6 @@ import { IfSlider } from './IfSlider';
 import { PotentiometerSim } from './PotentiometerSim';
 import { PwmSlider } from './PwmSlider';
 import { ResistorCalculator } from './ResistorCalculator';
-
-/** Renders **bold** inside RichText-style text. */
-function Text({ text }: { text: string }) {
-  return (
-    <>
-      {text.split(/(\*\*[^*]+\*\*)/).map((part, i) =>
-        part.startsWith('**') ? (
-          <strong key={i} className="text-ink">
-            <RichText text={part.slice(2, -2)} />
-          </strong>
-        ) : (
-          <RichText key={i} text={part} />
-        ),
-      )}
-    </>
-  );
-}
 
 const INTERACTIVES = {
   'resistor-calculator': ResistorCalculator,

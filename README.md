@@ -1,6 +1,6 @@
 # Taller de Arduino
 
-Página web para que los estudiantes resuelvan los 15 casos de errores de Arduino, repasen lo visto en clase y vean los retos. El profe tiene un panel para ver el avance de cada clase.
+Página web para que los estudiantes resuelvan los 15 casos de errores de Arduino, repasen lo visto en clase y vean las fichas del proyecto final. El profe tiene un panel para ver el avance de cada clase.
 
 - **Next.js** (App Router) + TypeScript + Tailwind CSS
 - **PostgreSQL** en Railway, con **Drizzle ORM**
@@ -134,17 +134,20 @@ En la página de la clase, **Proyectar en el tablero** abre una vista con el por
 
 ```text
 app/                  Páginas (App Router) y rutas de la API
-  (student)/          Casos, repaso y retos (requieren haber entrado)
+  (student)/          Casos, repaso, proyectos y retos (requieren haber entrado)
   profe/              Login y panel del profe
   api/                Verificación de respuestas, pistas, quices, panel y CSV
 components/           Interfaz (casos, circuitos SVG, repaso, panel)
   circuit/            Protoboard, Arduino UNO, cables, LED, resistencia, botón, potenciómetro
-content/              Contenido público: casos, repaso y retos
+content/              Contenido público: casos, repaso, proyectos y retos
 server/               Código que solo corre en el servidor (respuestas, sesiones, base de datos)
 db/                   Esquema de Drizzle y conexión
 drizzle/              Migraciones SQL
 scripts/              create-teacher y seed
+public/proyectos/     PDF de las fichas del proyecto final e imágenes de los diagramas de flujo
 ```
+
+Los **retos** están ocultos por ahora: para mostrarlos otra vez, pon `CHALLENGES_ENABLED = true` en `content/challenges.ts`.
 
 ### Seguridad y privacidad
 

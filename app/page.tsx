@@ -17,7 +17,8 @@ export default async function HomePage() {
           Encuentra el error, corrígelo y pruébalo.
         </h1>
         <p className="mt-4 max-w-prose text-lg text-slate-600">
-          15 casos de circuitos y código, repaso de las clases y los retos. Trabaja con tu pareja.
+          15 casos de circuitos y código, repaso de las clases y el proyecto final. Trabaja con tu
+          pareja.
         </p>
       </section>
 

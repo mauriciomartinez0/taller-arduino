@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     default: 'Taller de Arduino',
     template: '%s · Taller de Arduino',
   },
-  description: 'Casos de errores, repaso y retos de las clases de Arduino.',
+  description: 'Casos de errores, repaso y proyecto final de las clases de Arduino.',
 };
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {

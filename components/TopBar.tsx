@@ -2,13 +2,15 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { CHALLENGES_ENABLED } from '@/content/challenges';
 import { leaveClass } from '@/server/actions/student';
 
 const links = [
   { href: '/casos', label: 'Casos' },
   { href: '/repaso', label: 'Repaso' },
-  { href: '/retos', label: 'Retos' },
-] as const;
+  { href: '/proyectos', label: 'Proyectos' },
+  ...(CHALLENGES_ENABLED ? [{ href: '/retos', label: 'Retos' }] : []),
+];
 
 type TopBarProps = {
   student: { displayName: string; partnerName: string | null; points: number };

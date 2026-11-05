@@ -36,6 +36,9 @@ int medirRuido() {
   return maximo - minimo;   // la "altura" de la onda
 }`;
 
+/** Retos are hidden for now (nav link and /retos). Set to true to show them again. */
+export const CHALLENGES_ENABLED = false;
+
 export const challenges: Challenge[] = [
   {
     id: 'reto-ola',

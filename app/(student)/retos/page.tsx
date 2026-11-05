@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import { ChallengeCard } from '@/components/challenges/ChallengeCard';
 import { PageHeader } from '@/components/ui/PageHeader';
-import { challenges } from '@/content/challenges';
+import { challenges, CHALLENGES_ENABLED } from '@/content/challenges';
 import { challengeSolutions } from '@/server/challenge-solutions';
 import { getProgressMap } from '@/server/progress';
 import { requireStudentPage } from '@/server/student-session';
@@ -9,6 +10,7 @@ import { requireStudentPage } from '@/server/student-session';
 export const metadata: Metadata = { title: 'Retos' };
 
 export default async function ChallengesPage() {
+  if (!CHALLENGES_ENABLED) notFound();
   const { student, classroom } = await requireStudentPage();
   const progress = await getProgressMap(student.id);
 
